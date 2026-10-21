@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#131a22">
+<title>갈림길과 되풀이</title>
+<meta name="description" content="95점이 B 학점? — 파이썬 조건문의 순서, if와 elif의 차이, and·or·not, 중첩 조건, for·while, break·continue, 리스트 내포, 온도 알람까지 한 줄씩 실행해 보는 앱">
+<style>
+:root{--bg:#131a22;--card:#1a2430;--card2:#22303e;--fg:#eef3f8;--mut:#a2b2c3;--line:#2e4152;
+--py:#4b8bbe;--tag:#ffd43b;--ok:#6fdc9a;--bad:#ff7d7d;--gold:#ffd166;--or:#ff9b5c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.55}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 40px}
+h1{font-size:1.2rem;margin:6px 0}
+h1 small{display:block;font-size:.76rem;color:var(--mut);font-weight:400}
+.tabs{display:flex;gap:5px;margin:10px 0}
+.tabs button{flex:1;padding:9px 2px;border:1px solid var(--line);background:var(--card);color:var(--mut);border-radius:10px;font-size:.84rem;font-weight:600}
+.tabs button.on{background:#244a6e;color:#fff;border-color:var(--tag)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+h2{font-size:1rem;margin:2px 0 8px}
+.note{font-size:.86rem;color:var(--mut);margin:8px 0 0}
+.note b{color:var(--fg)}
+.btn{padding:11px 14px;border-radius:12px;border:0;background:linear-gradient(135deg,#306998,#4b8bbe);color:#fff;font-weight:800;font-size:.95rem;flex:1}
+.btn.sec{background:var(--card2);border:1px solid var(--line);color:var(--fg);font-weight:700}
+.btn.sm{flex:none;padding:7px 11px;font-size:.82rem}
+.btn:disabled{opacity:.4}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row+.row{margin-top:8px}
+.pill{padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--fg);font-size:.84rem}
+.pill.on{border-color:var(--tag);background:#4a401a;color:#fff}
+canvas{display:block;width:100%;border-radius:12px;background:#0d141b}
+.say{background:#132c44;border-left:3px solid var(--py);border-radius:8px;padding:9px 11px;font-size:.92rem;margin-top:10px}
+.say b{color:#fff}
+.say.q{border-left-color:var(--or);background:#2e2118}
+.res{margin-top:10px;font-size:.92rem;border-radius:10px;padding:10px 12px}
+.res.g{background:#16352a;border:1px solid #2f7a52}
+.res.r{background:#3a1d1d;border:1px solid #8a3a3a}
+.res.y{background:#3a3218;border:1px solid #8a7a3a}
+.mono,code{font-family:ui-monospace,Menlo,Consolas,monospace}
+.code{background:#0b1118;border:1px solid var(--line);border-radius:10px;padding:6px 0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.84rem;margin-top:8px;overflow-x:auto}
+.code div{padding:2px 10px;display:flex;gap:8px;white-space:pre;transition:background .2s}
+.code div .n{color:#55667f;width:16px;text-align:right;flex:none}
+.code div .m{width:22px;flex:none;text-align:center}
+.code div.cur{background:#1c3a5a}
+.code div.yes{background:#16352a}
+.code div.no{background:#3a1d1d55}
+.code div.skip{opacity:.45}
+.code .k{color:#c586c0}.code .s{color:#9fe49b}.code .f{color:#ffd43b}.code .c{color:#6a9955}.code .nm{color:#b5cea8}
+.console{background:#05080e;border-radius:10px;padding:8px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;min-height:36px;margin-top:8px;white-space:pre-wrap;color:#d8e2f0}
+.console .e{color:#ff8a8a}.console .g{color:#7b8aa3}.console .w{color:#ffd166}
+.sl{display:grid;grid-template-columns:80px 1fr 46px;gap:8px;align-items:center;font-size:.86rem;margin-top:8px}
+.sl input{width:100%}
+.sl b{text-align:right;font-variant-numeric:tabular-nums;font-size:1.05rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two .t{font-size:.8rem;font-weight:700;margin-top:6px}
+.grade{font-size:2rem;font-weight:900;text-align:center;margin-top:4px}
+.opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.opts button{text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--fg);font-size:.9rem}
+.opts button.on{border-color:var(--tag);background:#3a3420}
+.opts button.right{border-color:#6fdc9a;background:#16352a}
+.opts button.wrong{border-color:#ff7d7d;background:#3a1d1d}
+.flow{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:8px;font-size:.84rem}
+.flow .box{padding:7px 14px;border-radius:8px;background:var(--card2);border:1px solid var(--line)}
+.flow .dia{width:130px;height:100px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;font-size:.8rem}
+.flow .dia::before{content:"";position:absolute;width:68px;height:68px;left:31px;top:16px;transform:rotate(45deg);border:2px solid var(--tag);background:#2a2a18;border-radius:6px;z-index:0}
+.flow .dia span{position:relative;z-index:1;font-weight:700}
+.flow .br{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.flow .br div{text-align:center;padding:8px;border-radius:8px;background:var(--card2);border:1px solid var(--line);opacity:.5}
+.flow .br div.on{opacity:1;border-color:#6fdc9a;background:#16352a}
+.tog{display:flex;align-items:center;gap:8px;font-size:.88rem;margin-top:6px;background:var(--card2);border-radius:10px;padding:8px 10px}
+.tog input{width:20px;height:20px;flex:none}
+.cmp{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.cmp div{display:grid;grid-template-columns:1fr auto;gap:8px;background:#0b1118;border-radius:9px;padding:7px 10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.84rem}
+.cmp b.t{color:#6fdc9a}.cmp b.f{color:#ff8a8a}
+input[type=text],input[type=number]{width:100%;min-width:0;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:#0b1118;color:var(--fg);font-size:.95rem;font-family:ui-monospace,Menlo,Consolas,monospace}
+.temps{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.temps span{min-width:44px;text-align:center;padding:7px 6px;border-radius:9px;background:var(--card2);font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;border:2px solid transparent}
+.temps span.cur{border-color:var(--tag)}
+.temps span.pr{background:#1f5a3c}
+.temps span.sk{background:#3a3a3a;opacity:.6;text-decoration:line-through}
+.temps span.al{background:#7a2a2a}
+.temps span.ns{opacity:.3}
+.cls{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.cls div{display:grid;grid-template-columns:60px 1fr;gap:8px;align-items:center;background:var(--card2);border-radius:9px;padding:7px 10px;font-size:.88rem}
+.cls b{font-family:ui-monospace,Menlo,Consolas,monospace}
+.sum3{margin-top:12px;background:linear-gradient(135deg,#1d3a58,#3a3418);border-radius:14px;padding:12px 14px}
+.sum3 ol{margin:4px 0;padding-left:20px;font-size:.92rem}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+footer{text-align:center;color:var(--mut);font-size:.78rem;margin-top:18px}
+footer a{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🔀 갈림길과 되풀이<small>95점이 B 학점? — 조건문과 반복문을 한 줄씩 실행해 보기</small></h1>
+<div class="tabs">
+  <button class="on" data-tab="t1">① 갈림길</button>
+  <button data-tab="t2">② 조건 묶기</button>
+  <button data-tab="t3">③ 되풀이</button>
+  <button data-tab="t4">④ 온도 알람</button>
+</div>
+
+<!-- ① 갈림길 -->
+<section id="tab-t1">
+  <div class="card">
+    <h2>🧭 순서도 — 마름모가 갈림길</h2>
+    <div class="sl"><span>📦 재고</span><input type="range" id="stock" min="0" max="30" value="7"><b id="stockV"></b></div>
+    <div class="flow"><div class="box">재고 확인</div><div>↓</div><div class="dia"><span>재고 &lt; 10 ?</span></div><div class="br"><div id="fy">예 → 📨 주문 알림</div><div id="fn">아니요 → 그냥 지나감</div></div></div>
+    <p class="note">조건문이 없으면 재고가 넘쳐도 바닥나도 늘 같은 길만 갑니다. 생각은 <b>순서도</b>로, 표현은 <b>코드</b>로!</p>
+  </div>
+  <div class="card">
+    <h2>😱 95점인데 B? — 조건의 순서</h2>
+    <div class="sl"><span>📝 점수</span><input type="range" id="score" min="0" max="100" value="95"><b id="scoreV"></b></div>
+    <div class="two">
+      <div><div class="t" style="color:#ff8a8a">❌ 처음 코드</div><div class="code" id="cA"></div><div class="grade" id="gA"></div></div>
+      <div><div class="t" style="color:#6fdc9a">✅ 순서를 고친 코드</div><div class="code" id="cB"></div><div class="grade" id="gB"></div></div>
+    </div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="stepIf">▶ 한 줄씩 물어보기</button></div>
+    <div id="ifMsg"></div>
+  </div>
+  <div class="card">
+    <h2>❓ 퀴즈 ① 무엇이 출력될까</h2>
+    <div class="code" id="cQ"></div>
+    <div class="say q">elif 없이 <b>if만 두 번</b>. 점수가 95점이면?</div>
+    <div class="opts" id="q1"><button data-a="0">A만</button><button data-a="1">B만</button><button data-a="2">A와 B 둘 다</button></div>
+    <div class="console" id="q1Out" hidden></div>
+    <div id="q1Msg"></div>
+  </div>
+</section>
+
+<!-- ② 조건 묶기 -->
+<section id="tab-t2" hidden>
+  <div class="card">
+    <h2>⚖️ 비교 기호와 경계값</h2>
+    <div class="sl"><span>점수</span><input type="range" id="bnd" min="85" max="95" value="90"><b id="bndV"></b></div>
+    <div class="cmp" id="cmpList"></div>
+    <p class="note"><b>==</b>가 두 개인 이유: <b>=</b> 하나는 이미 이름표 붙이기(대입)에 쓰고 있기 때문. <b>&gt;=</b>는 같은 것도 포함, <b>&gt;</b>는 포함 안 함 — 정확히 90점일 때를 꼭 확인!</p>
+  </div>
+  <div class="card">
+    <h2>💡 and · or · not — 전구 회로</h2>
+    <div class="tog"><input type="checkbox" id="cA1" checked><label for="cA1">⏰ 근무 시간 &gt; 8시간</label></div>
+    <div class="tog"><input type="checkbox" id="cB1"><label for="cB1">💪 작업 강도 == "높음"</label></div>
+    <div class="row" style="margin-top:8px"><button class="pill on" data-lg="and">and (직렬)</button><button class="pill" data-lg="or">or (병렬)</button><button class="pill" data-lg="not">not</button></div>
+    <canvas id="bulb" style="margin-top:8px"></canvas>
+    <div id="lgMsg"></div>
+  </div>
+  <div class="card">
+    <h2>🧮 계산 순서: not → and → or</h2>
+    <div class="row"><button class="pill on" data-pv="a">A = True</button><button class="pill on" data-pv="b">B = True</button><button class="pill" data-pv="c">C = False</button></div>
+    <div class="cmp" id="prec"></div>
+    <p class="note">헷갈리면 <b>괄호</b>로 의도를 분명히! 괄호 위치에 따라 결과가 달라질 수 있습니다.</p>
+  </div>
+  <div class="card">
+    <h2>🔐 조건 속의 조건 — 로그인</h2>
+    <div class="two"><input type="text" id="lid" value="bread" placeholder="아이디"><input type="text" id="lpw" value="1234" placeholder="비밀번호"></div>
+    <div class="code" id="cLog"></div>
+    <div class="console" id="logOut"></div>
+    <p class="note">정답 계정: 아이디 <b class="mono">bread</b>, 비밀번호 <b class="mono">0000</b> (예시). 들여쓰기가 두 단계로 깊어집니다 — 세 단계를 넘으면 구조를 다시 생각해 보세요.</p>
+  </div>
+</section>
+
+<!-- ③ 되풀이 -->
+<section id="tab-t3" hidden>
+  <div class="card">
+    <h2>🔁 for — 하나씩 꺼내며, break · continue</h2>
+    <div class="row"><span class="note" style="margin:0">온도 리스트</span><input type="text" id="tl" value="22, -1, 25, 31, 24" style="flex:1"></div>
+    <div class="temps" id="temps"></div>
+    <div class="code" id="cFor"></div>
+    <div class="console" id="forOut"></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="forStep">▶ 한 단계</button><button class="btn sec sm" id="forAll">⏩ 끝까지</button><button class="btn sec sm" id="forReset">↺</button></div>
+    <div id="forMsg"></div>
+  </div>
+  <div class="card">
+    <h2>❓ 퀴즈 ② 알람 전까지</h2>
+    <div class="say q">온도 [22, −1, 25, 31, 24]. 음수면 continue, 30 초과면 알람 후 break, 그 밖에는 온도 출력. 알람 전까지 출력되는 온도는 몇 개?</div>
+    <div class="opts" id="q2"><button data-a="2">2개</button><button data-a="3">3개</button><button data-a="4">4개</button></div>
+    <div id="q2Msg"></div>
+  </div>
+  <div class="card">
+    <h2>♾️ while — 무한 반복 막기</h2>
+    <p class="note" style="margin-top:0">"연결될 때까지 다시 시도". 서버가 계속 꺼져 있다면? (앱은 50번에서 강제로 멈춥니다)</p>
+    <div class="tog"><input type="checkbox" id="srvOn"><label for="srvOn">🖥️ 서버가 3번째 시도에 켜짐</label></div>
+    <div class="tog"><input type="checkbox" id="lim" checked><label for="lim">🛡️ 시도 횟수 제한 <code>and tries &lt; 5</code></label></div>
+    <div class="code" id="cWh"></div>
+    <div class="console" id="whOut"></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="whGo">▶ 실행</button></div>
+    <div id="whMsg"></div>
+  </div>
+  <div class="card">
+    <h2>✨ 한 줄로 거르기 — 리스트 내포</h2>
+    <div class="code" id="cLc"></div>
+    <div class="console" id="lcOut"></div>
+    <p class="note">반복문 네 줄이 한 줄로! 읽기 쉽고 보통 더 빠릅니다. 다만 조건이 복잡해지면 오히려 읽기 어려우니 <b>한눈에 읽히는 정도까지만</b>.</p>
+  </div>
+</section>
+
+<!-- ④ 온도 알람 -->
+<section id="tab-t4" hidden>
+  <div class="card">
+    <h2>🚨 온도 알람 완성하기</h2>
+    <div class="row"><span class="note" style="margin:0">온도</span><input type="text" id="al" value="22, -1, 33, 38, 29, 35" style="flex:1"></div>
+    <div class="row" style="margin-top:8px"><button class="pill on" data-ao="good">✅ 위험(≥35) 먼저</button><button class="pill" data-ao="bad">❌ 주의(≥30) 먼저</button></div>
+    <div class="code" id="cAl"></div>
+    <div class="cls" id="alOut"></div>
+    <div id="alMsg"></div>
+  </div>
+  <div class="card">
+    <h2>🤔 생각해 볼 질문 — 겹친 반복에서 break</h2>
+    <div class="code" id="cNest"></div>
+    <div class="say q">안쪽 반복에서 break를 만나면 바깥 반복까지 모두 멈출까요?</div>
+    <div class="opts" id="q3"><button data-a="0">바깥까지 모두 멈춘다 → (0, 0)만 출력</button><button data-a="1">안쪽만 멈추고 바깥은 계속 → (0, 0), (1, 0), (2, 0)</button></div>
+    <div class="console" id="nestOut" hidden></div>
+    <div id="q3Msg"></div>
+  </div>
+  <div class="card">
+    <h2>📌 세 줄 정리</h2>
+    <div class="sum3"><ol>
+      <li>조건문은 <b>위에서부터</b> 묻고 <b>처음 참인 곳에서 멈추니</b>, 범위가 좁은 조건을 먼저 둔다.</li>
+      <li><b>if만 여러 번</b> 쓰면 모두 검사하고, <b>elif로 묶으면</b> 하나만 고른다.</li>
+      <li>반복은 <b>for·while</b>, 흐름은 <b>break·continue</b>, 거르기는 <b>리스트 내포</b>로.</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer>© 2026 정필 수심명 · <a href="https://blog.naver.com/omyman" target="_blank" rel="noopener">blog.naver.com/omyman</a><br>파이썬 03 부록 · 인터넷 없이 동작</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),1800);}
+const vib=n=>{try{navigator.vibrate&&navigator.vibrate(n);}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function prep(cv,ratio){const dpr=Math.min(2,window.devicePixelRatio||1),w=cv.clientWidth||320,h=Math.round(w*ratio);
+  cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+'px';const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c,w,h};}
+function T(c,s,x,y,col,size,al,bl,wt){c.fillStyle=col;c.font=`${wt||''} ${size||12}px -apple-system,"Malgun Gothic",sans-serif`;c.textAlign=al||'center';c.textBaseline=bl||'middle';c.fillText(s,x,y);}
+const hl=s=>esc(s).replace(/(#.*)$/,'<span class="c">$1</span>').replace(/(&quot;[^&]*&quot;)/g,'<span class="s">$1</span>').replace(/\b(if|elif|else|for|in|while|and|or|not|break|continue|print|def|return|True|False)\b/g,'<span class="k">$1</span>');
+function codeHTML(lines,marks){return lines.map((l,i)=>`<div class="${(marks&&marks[i])||''}"><span class="n">${i+1}</span><span>${hl(l)}</span></div>`).join('');}
+
+/* ===== ① 순서도 ===== */
+function flow(){const v=+$('#stock').value;$('#stockV').textContent=v;$('#fy').classList.toggle('on',v<10);$('#fn').classList.toggle('on',v>=10);}
+$('#stock').addEventListener('input',flow);
+/* ===== ① 학점 ===== */
+const BA=[['if','score >= 80','"B"'],['elif','score >= 90','"A"'],['else','','"C"']],BB=[['if','score >= 90','"A"'],['elif','score >= 80','"B"'],['else','','"C"']];
+const ln=b=>b.flatMap(([k,c,g])=>[k==='else'?'else:':`${k} ${c}:`,`    grade = ${g}`]);
+const ev=(c,s)=>{const m=c.match(/score >= (\d+)/);return s>=+m[1];};
+function gradeOf(B,s){for(const [k,c,g] of B){if(k==='else'||ev(c,s))return g.replace(/"/g,'');}}
+function showIf(marksA,marksB){const s=+$('#score').value;$('#scoreV').textContent=s;$('#cA').innerHTML=codeHTML(ln(BA),marksA);$('#cB').innerHTML=codeHTML(ln(BB),marksB);
+  const a=gradeOf(BA,s),b=gradeOf(BB,s);$('#gA').textContent=a;$('#gB').textContent=b;$('#gA').style.color=a===b?'#6fdc9a':'#ff8a8a';$('#gB').style.color='#6fdc9a';}
+$('#score').addEventListener('input',()=>{showIf();$('#ifMsg').innerHTML='';});
+let ifBusy=false;
+$('#stepIf').onclick=async()=>{if(ifBusy)return;ifBusy=true;$('#stepIf').disabled=true;const s=+$('#score').value;
+  const run=async(B,set)=>{const mk=[];for(let i=0;i<B.length;i++){const [k,c]=B[i];mk[2*i]='cur';set(mk);await sleep(600);
+      const ok=k==='else'||ev(c,s);mk[2*i]=ok?'yes':'no';if(ok){mk[2*i+1]='yes';for(let j=2*i+2;j<B.length*2;j++)mk[j]='skip';set(mk);await sleep(400);return i;}set(mk);await sleep(250);}};
+  let mA=[],mB=[];const iA=await run(BA,m=>{mA=m;showIf(mA,mB);});const iB=await run(BB,m=>{mB=m;showIf(mA,mB);});
+  const a=gradeOf(BA,s),b=gradeOf(BB,s);
+  $('#ifMsg').innerHTML=a!==b?`<div class="res r">😱 ${s}점은 <b>첫 질문 "80점 이상?"에서 이미 참</b> → B를 받고 끝! "90점 이상?"까지 가 보지도 못합니다. 조건문은 <b>위에서부터 차례로</b> 묻고 <b>처음 참이 되는 곳에서 멈춥니다</b>. 오류 메시지는 하나도 없지만 결과가 틀린, 가장 무서운 종류의 버그.</div><div class="say">✅ 오른쪽처럼 <b>범위가 좁은(까다로운) 조건부터</b> 위에 두면 해결!</div>`
+    :`<div class="say">${s}점은 두 코드의 결과가 같습니다(${a}). 점수를 <b>90 이상</b>으로 올려 보세요 — 왼쪽 코드가 틀리기 시작합니다.</div>`;
+  ifBusy=false;$('#stepIf').disabled=false;vib(a!==b?80:20);};
+/* ===== ① 퀴즈 ===== */
+const QL=['score = 95','if score >= 90:','    print("A")','if score >= 80:','    print("B")'];
+$('#cQ').innerHTML=codeHTML(QL);
+$$('#q1 button').forEach(b=>b.onclick=()=>{const ok=b.dataset.a==='2';$$('#q1 button').forEach(x=>x.className=x.dataset.a==='2'?'right':x===b?'wrong':'');vib(ok?[30,40,60]:80);
+  $('#q1Out').hidden=false;$('#q1Out').innerHTML='A\nB';$('#cQ').innerHTML=codeHTML(QL,['','yes','yes','yes','yes']);
+  $('#q1Msg').innerHTML=`<div class="res ${ok?'g':'r'}">${ok?'🎉 정답!':'아쉽네요.'} 정답은 <b>A와 B 둘 다</b>. 따로 쓴 if는 <b>각각 독립된 질문</b>이라, 앞에서 참이었어도 다음 질문을 또 합니다.<br>📌 하나만 골라야 하면 <b>if + elif</b>로 묶고, 여러 개가 동시에 해당될 수 있으면 <b>if를 따로</b> 씁니다.</div>`;});
+
+/* ===== ② 비교 ===== */
+function cmpList(){const v=+$('#bnd').value;$('#bndV').textContent=v;const tf=x=>x?'<b class="t">True</b>':'<b class="f">False</b>';
+  $('#cmpList').innerHTML=[['score == 90',v===90],['score != 90',v!==90],['score >= 90  (90 이상)',v>=90],['score > 90   (90 초과)',v>90],['score <= 90  (90 이하)',v<=90],['score < 90   (90 미만)',v<90]].map(([e,r])=>`<div><span>${esc(e).replace('score',`<span style="color:#a2b2c3">score(${v})</span>`)}</span>${tf(r)}</div>`).join('');}
+$('#bnd').addEventListener('input',cmpList);
+/* ===== ② 전구 ===== */
+let lg='and';
+function bulb(){const A=$('#cA1').checked,B=$('#cB1').checked;const on=lg==='and'?A&&B:lg==='or'?A||B:!A;
+  $('#cB1').closest('.tog').style.opacity=lg==='not'?.4:1;
+  const {c,w,h}=prep($('#bulb'),0.42);c.clearRect(0,0,w,h);c.lineWidth=3;const col=on?'#ffd43b':'#4a5568';
+  const sw=(x,y,closed,lab)=>{c.strokeStyle='#a2b2c3';c.beginPath();c.arc(x-18,y,3,0,7);c.arc(x+18,y,3,0,7);c.stroke();c.beginPath();c.moveTo(x-18,y);c.lineTo(x+18,closed?y:y-16);c.stroke();T(c,lab,x,y+18,closed?'#6fdc9a':'#ff8a8a',11);};
+  const L=30,R=w-46,top=h*0.3,bot=h*0.78;c.strokeStyle='#55667f';
+  // 배터리 + 전구
+  c.beginPath();c.moveTo(L,bot);c.lineTo(L,top);c.stroke();c.beginPath();c.moveTo(R,top);c.lineTo(R,bot);c.lineTo(L,bot);c.stroke();
+  T(c,'🔋',L,bot,'#fff',18);c.beginPath();c.arc(R,(top+bot)/2,16,0,7);c.fillStyle=on?'#ffd43b':'#2a3340';c.fill();T(c,on?'💡':'',R,(top+bot)/2,'#000',18);
+  if(on){c.fillStyle='rgba(255,212,59,.18)';c.beginPath();c.arc(R,(top+bot)/2,34,0,7);c.fill();}
+  c.strokeStyle='#55667f';
+  if(lg==='and'){c.beginPath();c.moveTo(L,top);c.lineTo(w*0.3-18,top);c.moveTo(w*0.3+18,top);c.lineTo(w*0.6-18,top);c.moveTo(w*0.6+18,top);c.lineTo(R,top);c.stroke();sw(w*0.3,top,A,'근무>8h');sw(w*0.6,top,B,'강도 높음');}
+  else if(lg==='or'){const y1=top-14,y2=top+30;c.beginPath();c.moveTo(L,top);c.lineTo(w*0.3,top);c.moveTo(w*0.3,y1);c.lineTo(w*0.3,y2);c.moveTo(w*0.3,y1);c.lineTo(w*0.45-18,y1);c.moveTo(w*0.45+18,y1);c.lineTo(w*0.6,y1);c.moveTo(w*0.3,y2);c.lineTo(w*0.45-18,y2);c.moveTo(w*0.45+18,y2);c.lineTo(w*0.6,y2);c.moveTo(w*0.6,y1);c.lineTo(w*0.6,y2);c.moveTo(w*0.6,top);c.lineTo(R,top);c.stroke();sw(w*0.45,y1,A,'');sw(w*0.45,y2,B,'');T(c,'근무>8h',w*0.45,y1-22,A?'#6fdc9a':'#ff8a8a',10);T(c,'강도 높음',w*0.45,y2+18,B?'#6fdc9a':'#ff8a8a',10);}
+  else{c.beginPath();c.moveTo(L,top);c.lineTo(w*0.45-18,top);c.moveTo(w*0.45+18,top);c.lineTo(R,top);c.stroke();sw(w*0.45,top,!A,'not 근무>8h');}
+  const expr=lg==='and'?`hours > 8 and level == "높음"`:lg==='or'?`hours > 8 or level == "높음"`:`not (hours > 8)`;
+  $('#lgMsg').innerHTML=`<div class="say"><span class="mono">${esc(expr)}</span> → <b style="color:${on?'#6fdc9a':'#ff8a8a'}">${on?'True':'False'}</b><br>${lg==='and'?'🔗 <b>and</b> = 직렬: <b>모든</b> 조건이 참일 때만 불이 켜짐. "8시간 넘게 일했고 강도도 높음"일 때만 특별 수당!':lg==='or'?'🔀 <b>or</b> = 병렬: <b>하나만</b> 켜져도 불이 들어옴.':'🔄 <b>not</b> = 참과 거짓을 <b>뒤집기</b>.'}</div>`;}
+['cA1','cB1'].forEach(id=>$('#'+id).addEventListener('change',bulb));
+$$('[data-lg]').forEach(b=>b.onclick=()=>{$$('[data-lg]').forEach(x=>x.classList.toggle('on',x===b));lg=b.dataset.lg;bulb();});
+/* ===== ② 우선순위 ===== */
+const PV={a:false,b:true,c:false};
+function prec(){const {a,b,c}=PV;$$('[data-pv]').forEach(x=>{const k=x.dataset.pv;x.classList.toggle('on',PV[k]);x.textContent=`${k.toUpperCase()} = ${PV[k]?'True':'False'}`;});
+  const tf=x=>x?'<b class="t">True</b>':'<b class="f">False</b>';
+  const rows=[['not A or B and C',(!a)||(b&&c)],['(not A) or (B and C)  ← 실제 계산 순서',(!a)||(b&&c)],['not (A or B) and C',!(a||b)&&c],['(not A or B) and C',((!a)||b)&&c]];
+  $('#prec').innerHTML=rows.map(([e,r])=>`<div><span>${esc(e)}</span>${tf(r)}</div>`).join('');}
+$$('[data-pv]').forEach(x=>x.onclick=()=>{PV[x.dataset.pv]=!PV[x.dataset.pv];prec();});
+/* ===== ② 로그인 ===== */
+const LG=['if user_id == "bread":','    if password == "0000":','        print("로그인 성공")','    else:','        print("비밀번호가 틀렸습니다")','else:','    print("아이디가 없습니다")'];
+function login(){const id=$('#lid').value.trim(),pw=$('#lpw').value.trim();let mk=[],out;
+  if(id==='bread'){mk[0]='yes';if(pw==='0000'){mk[1]='yes';mk[2]='yes';mk[3]='skip';mk[4]='skip';out='로그인 성공 🎉';}else{mk[1]='no';mk[3]='yes';mk[4]='yes';out='비밀번호가 틀렸습니다';}mk[5]='skip';mk[6]='skip';}
+  else{mk[0]='no';[1,2,3,4].forEach(i=>mk[i]='skip');mk[5]='yes';mk[6]='yes';out='아이디가 없습니다 (비밀번호는 물어보지도 않음)';}
+  $('#cLog').innerHTML=codeHTML(LG,mk);$('#logOut').textContent=out;}
+['lid','lpw'].forEach(id=>$('#'+id).addEventListener('input',login));
+
+/* ===== ③ for ===== */
+const FL=['for t in temps:','    if t < 0:','        continue  # 건너뛰기','    if t > 30:','        print("알람!", t)','        break     # 즉시 끝','    print(t)'];
+let temps=[],fi=0,fdone=false,fout=[],fstat=[];
+function parseT(s){return s.split(/[,\s]+/).filter(Boolean).map(Number).filter(v=>!isNaN(v)).slice(0,12);}
+function forReset(){temps=parseT($('#tl').value);if(!temps.length)temps=[22,-1,25,31,24];fi=0;fdone=false;fout=[];fstat=temps.map(()=>'');renderFor();$('#forMsg').innerHTML='';$('#forStep').disabled=false;}
+function renderFor(mk){$('#temps').innerHTML=temps.map((t,i)=>`<span class="${fstat[i]}${i===fi&&!fdone?' cur':''}">${t}</span>`).join('');$('#cFor').innerHTML=codeHTML(FL,mk);
+  $('#forOut').innerHTML=fout.length?fout.join('\n'):'<span class="g">출력이 여기에 나옵니다</span>';}
+function forStep(){if(fdone)return;const t=temps[fi];let mk=['cur'];
+  if(t<0){mk[1]='yes';mk[2]='yes';fstat[fi]='sk';fi++;}
+  else if(t>30){mk[1]='no';mk[3]='yes';mk[4]='yes';mk[5]='yes';fout.push(`<span class="w">알람! ${t}</span>`);fstat[fi]='al';for(let j=fi+1;j<temps.length;j++)fstat[j]='ns';fdone=true;vib(80);}
+  else{mk[1]='no';mk[3]='no';mk[6]='yes';fout.push(String(t));fstat[fi]='pr';fi++;}
+  if(!fdone&&fi>=temps.length)fdone=true;renderFor(mk);
+  if(fdone){$('#forStep').disabled=true;const np=fout.filter(x=>!x.includes('알람')).length,al=fout.some(x=>x.includes('알람'));
+    $('#forMsg').innerHTML=`<div class="say">${al?`🚨 알람 전까지 출력된 온도 <b>${np}개</b>. break 뒤의 데이터(흐린 칸)는 <b>검사하지도 않습니다</b>. 멈추는 게 맞는 상황인지, 기록만 하고 계속 가야 하는 상황인지 설계할 때 정하세요.`:`끝까지 돌았습니다. 출력 ${np}개.`} 회색 줄 = <b>continue</b>로 건너뛴 값(이번 손님만 패스), 빨강 = <b>break</b>(아예 퇴근)!</div>`;}}
+$('#forStep').onclick=forStep;$('#forAll').onclick=async()=>{while(!fdone){forStep();await sleep(350);}};$('#forReset').onclick=forReset;$('#tl').addEventListener('change',forReset);
+$$('#q2 button').forEach(b=>b.onclick=()=>{const ok=b.dataset.a==='2';$$('#q2 button').forEach(x=>x.className=x.dataset.a==='2'?'right':x===b?'wrong':'');vib(ok?[30,40,60]:80);
+  $('#q2Msg').innerHTML=`<div class="res ${ok?'g':'r'}">${ok?'🎉 정답!':'아쉽네요.'} 정답은 <b>2개</b>. 22 출력 → −1 건너뜀(continue) → 25 출력 → 31에서 알람과 함께 break. 마지막 24는 <b>아예 보지도 못합니다</b>. 위의 실행기에 같은 리스트를 넣고 확인해 보세요.</div>`;});
+/* ===== ③ while ===== */
+function whCode(){const lim=$('#lim').checked;return['connected = False','tries = 0',`while not connected${lim?' and tries < 5':''}:`,'    tries += 1','    connected = try_connect()','print("시도", tries, "번 →", "연결" if connected else "포기")'];}
+function whRender(){$('#cWh').innerHTML=codeHTML(whCode());}
+['srvOn','lim'].forEach(id=>$('#'+id).addEventListener('change',()=>{whRender();$('#whOut').innerHTML='';$('#whMsg').innerHTML='';}));
+let whBusy=false;
+$('#whGo').onclick=async()=>{if(whBusy)return;whBusy=true;$('#whGo').disabled=true;const lim=$('#lim').checked,on=$('#srvOn').checked;let tries=0,con=false,log=[];
+  while(!con&&(!lim||tries<5)){tries++;con=on&&tries>=3;log.push(`시도 ${tries}: ${con?'✅ 연결됨':'❌ 실패'}`);$('#whOut').innerHTML=log.slice(-8).join('\n');await sleep(tries>10?20:250);if(tries>=50)break;}
+  if(tries>=50&&!con){log.push('<span class="e">⚠️ 50번째… 끝나지 않는 무한 반복! (앱이 강제로 멈춤)</span>');$('#whOut').innerHTML=log.slice(-8).join('\n');vib(120);
+    $('#whMsg').innerHTML='<div class="res r">♾️ 서버가 계속 꺼져 있으면 조건 <code>not connected</code>가 <b>영원히 참</b> → 프로그램이 영원히 기다립니다. 🛡️ 시도 횟수 제한을 켜 보세요.</div>';}
+  else{log.push(`print → 시도 ${tries} 번 → ${con?'연결':'포기'}`);$('#whOut').innerHTML=log.slice(-8).join('\n');
+    $('#whMsg').innerHTML=`<div class="say">${con?'✅ 3번째에 연결되어 조건이 거짓이 되며 반복이 끝났습니다.':'🛡️ 5번 시도하고 깔끔하게 포기했습니다.'} <b>and</b>로 "연결 안 됨"과 "시도 5번 미만"을 묶은 것이 안전장치 — ②에서 배운 논리 연산자가 여기서 쓰입니다.</div>`;vib(30);}
+  whBusy=false;$('#whGo').disabled=false;};
+/* ===== ③ 리스트 내포 ===== */
+$('#cLc').innerHTML=codeHTML(['temps = [22, -1, 25, 31, 24]','','# 반복문 네 줄','ok = []','for t in temps:','    if t >= 0:','        ok.append(t)','','# 리스트 내포 한 줄','ok = [t for t in temps if t >= 0]']);
+$('#lcOut').textContent='[22, 25, 31, 24]';
+
+/* ===== ④ 온도 알람 ===== */
+let ao='good';
+function alCode(){return ao==='good'?['for t in temps:','    if t < 0:','        continue','    if t >= 35:','        print(t, "위험")','    elif t >= 30:','        print(t, "주의")','    else:','        print(t, "정상")']:['for t in temps:','    if t < 0:','        continue','    if t >= 30:','        print(t, "주의")','    elif t >= 35:','        print(t, "위험")','    else:','        print(t, "정상")'];}
+function alarm(){const ts=parseT($('#al').value);$('#cAl').innerHTML=codeHTML(alCode());let wrong=0;
+  $('#alOut').innerHTML=ts.map(t=>{if(t<0)return`<div><b>${t}</b><span style="color:#7b8aa3">⏭️ 건너뜀 (센서 오류)</span></div>`;
+    const right=t>=35?'위험':t>=30?'주의':'정상';const got=ao==='good'?right:(t>=30?'주의':'정상');if(got!==right)wrong++;
+    const ic={위험:'🔴',주의:'🟠',정상:'🟢'}[got];return`<div style="${got!==right?'border:1px solid #ff7d7d':''}"><b>${t}</b><span>${ic} ${got}${got!==right?` <span style="color:#ff8a8a">← 사실은 ${right}!</span>`:''}</span></div>`;}).join('');
+  $('#alMsg').innerHTML=ao==='good'?'<div class="res g">✅ 범위가 좁은 <b>위험(≥35)</b>부터 물으니 모두 바르게 분류됩니다. 반복 + 건너뛰기 + 조건 순서 — 오늘 배운 것이 다 들어 있지요. 실제 감시 프로그램도 이 뼈대에 기능을 덧붙여 만듭니다.</div>'
+    :`<div class="res r">❌ 30 이상을 먼저 물으니 35도 넘는 온도도 <b>주의</b>에서 멈춥니다 (잘못 분류 ${wrong}개). elif ≥35는 영원히 도달할 수 없는 죽은 코드 — ①의 95점 B와 똑같은 함정!</div>`;}
+$$('[data-ao]').forEach(b=>b.onclick=()=>{$$('[data-ao]').forEach(x=>x.classList.toggle('on',x===b));ao=b.dataset.ao;alarm();vib(ao==='bad'?60:20);});
+$('#al').addEventListener('input',alarm);
+const NL=['for i in range(3):','    for j in range(3):','        if j == 1:','            break','        print(i, j)'];
+$('#cNest').innerHTML=codeHTML(NL);
+$$('#q3 button').forEach(b=>b.onclick=()=>{const ok=b.dataset.a==='1';$$('#q3 button').forEach(x=>x.className=x.dataset.a==='1'?'right':x===b?'wrong':'');vib(ok?[30,40,60]:80);
+  $('#nestOut').hidden=false;$('#nestOut').textContent='0 0\n1 0\n2 0';
+  $('#q3Msg').innerHTML=`<div class="res ${ok?'g':'r'}">${ok?'🎉 짐작이 맞았습니다!':'실행해 보니 달랐지요?'} break는 <b>자신이 들어 있는 가장 안쪽 반복만</b> 끝냅니다. 바깥 반복은 계속 돌아 i = 0, 1, 2마다 (i, 0)이 출력됩니다. 짐작보다 <b>짧은 코드로 직접 확인</b>하는 습관이 가장 확실한 공부!</div>`;});
+
+/* ===== 탭 ===== */
+function show(t){$$('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));['t1','t2','t3','t4'].forEach(k=>$('#tab-'+k).hidden=k!==t);if(t==='t2')bulb();window.scrollTo(0,0);}
+$$('.tabs button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+window.addEventListener('resize',()=>{if(!$('#tab-t2').hidden)bulb();});
+flow();showIf();cmpList();bulb();prec();login();forReset();whRender();alarm();
+})();
+</script>
+</body>
+</html>
